@@ -29,7 +29,7 @@ import { initJsPsych } from 'jspsych';
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import PreloadPlugin from '@jspsych/plugin-preload';
-import CircularSineGratingPlugin from './CircularSineGratingPlugin';
+import CircularSineStimulusPlugin from './CircularSineStimulusPlugin';
 
 /**
  * This method will be executed by jsPsych Builder and is expected to run the
@@ -62,8 +62,7 @@ export async function run({ assetPaths, input = {}, environment }) {
 
   // Welcome screen
   timeline.push({
-    type: CircularSineGratingPlugin,
-    text: 'world',
+    type: CircularSineStimulusPlugin,
   });
 
   // Run the experiment
