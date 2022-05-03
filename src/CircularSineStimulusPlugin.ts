@@ -7,6 +7,14 @@ const info = <const>{
       type: ParameterType.INT,
       default: 200,
     },
+    density: {
+      type: ParameterType.INT,
+      default: 1,
+    },
+    phaseOffset: {
+      type: ParameterType.INT,
+      default: 0,
+    },
   },
 };
 
@@ -52,9 +60,18 @@ class CircularSineStimulusPlugin implements JsPsychPlugin<Info> {
       circle.setAttribute('stroke-width', '0');
 
       // Calculate properties
-      const sineArgument = (Math.PI / 180) * ((360 / maxRadius) * i);
-      const sineAtArgument = Math.sin(sineArgument * 0.5);
-      const color = ((sineAtArgument + 1) / 2) * 255;
+      // - Calculate the sine argument in degrees
+      // - Shift by 90 degrees so that the standardized sine will start at 1
+      //   which results in a white color.
+      const sineArgument =
+        (Math.PI / 180) *
+        ((360 / maxRadius) * (i * trial.density) + 90 + trial.phaseOffset);
+      const sineAtArgument = Math.sin(sineArgument);
+
+      const standardizedSine = (sineAtArgument + 1) / 2;
+
+      const color = standardizedSine * 255;
+      console.log(color);
 
       let radius = i;
 

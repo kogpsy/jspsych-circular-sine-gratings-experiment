@@ -63,6 +63,9 @@ export async function run({ assetPaths, input = {}, environment }) {
   // Welcome screen
   timeline.push({
     type: CircularSineStimulusPlugin,
+    size: 200,
+    density: 3,
+    phaseOffset: 0,
   });
 
   // Run the experiment
