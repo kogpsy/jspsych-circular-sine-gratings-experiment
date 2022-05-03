@@ -15,6 +15,14 @@ const info = <const>{
       type: ParameterType.INT,
       default: 0,
     },
+    color: {
+      type: ParameterType.STRING,
+      default: 'black',
+    },
+    opacity: {
+      type: ParameterType.FLOAT,
+      default: 1,
+    },
   },
 };
 
@@ -50,6 +58,19 @@ class CircularSineStimulusPlugin implements JsPsychPlugin<Info> {
     const svg = document.createElement('svg');
     svg.setAttribute('height', `${trial.size}`);
     svg.setAttribute('width', `${trial.size}`);
+    svg.style.opacity = `${trial.opacity}`;
+    // Set the blend mode based on the requested color
+    if (trial.color === 'black') {
+      svg.style.mixBlendMode = 'multiply';
+    } else if (trial.color === 'white') {
+      svg.style.mixBlendMode = 'screen';
+    }
+
+    // Initialize loop varialbes
+    let sineArgument: number,
+      sineAtArgument: number,
+      standardizedSine: number,
+      circleColor: number;
 
     // Append circles programmatically
     for (let i = maxRadius; i >= 1; i -= 1) {
@@ -63,30 +84,34 @@ class CircularSineStimulusPlugin implements JsPsychPlugin<Info> {
       // - Calculate the sine argument in degrees
       // - Shift by 90 degrees so that the standardized sine will start at 1
       //   which results in a white color.
-      const sineArgument =
+      sineArgument =
         (Math.PI / 180) *
         ((360 / maxRadius) * (i * trial.density) + 90 + trial.phaseOffset);
-      const sineAtArgument = Math.sin(sineArgument);
+      sineAtArgument = Math.sin(sineArgument);
 
-      const standardizedSine = (sineAtArgument + 1) / 2;
+      standardizedSine = (sineAtArgument + 1) / 2;
 
-      const color = standardizedSine * 255;
-      console.log(color);
-
-      let radius = i;
+      // If white circles are requested, invert the color
+      circleColor = standardizedSine * 255;
+      if (trial.color === 'white') {
+        circleColor = 255 - circleColor;
+      }
 
       // Set variable attributes
-      circle.setAttribute('r', `${radius}`);
-      circle.setAttribute('fill', `rgb(${color},${color},${color})`);
+      circle.setAttribute('r', `${i}`);
+      circle.setAttribute(
+        'fill',
+        `rgb(${circleColor},${circleColor},${circleColor})`
+      );
 
       // Append to svg
       svg.appendChild(circle);
     }
 
-    const tmpParent = document.createElement('div');
-    tmpParent.appendChild(svg);
+    const container = document.createElement('div');
+    container.appendChild(svg);
 
-    display_element.innerHTML = tmpParent.innerHTML;
+    display_element.innerHTML = container.innerHTML;
 
     // data saving
     var trial_data = {

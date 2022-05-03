@@ -66,6 +66,8 @@ export async function run({ assetPaths, input = {}, environment }) {
     size: 200,
     density: 3,
     phaseOffset: 0,
+    color: 'black',
+    opacity: 1,
   });
 
   // Run the experiment
